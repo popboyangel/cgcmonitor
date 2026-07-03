@@ -21,7 +21,6 @@ jobs:
       - name: 安装系统依赖与 Buildozer 核心
         run: |
           sudo apt-get update
-          # 补充安装 libunwind-dev 并精简掉不必要的 gstreamer 多媒体库，彻底根除依赖冲突
           sudo apt-get install -y build-essential ccache git libffi-dev libssl-dev xclip libunwind-dev
           sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
           sudo apt-get install -y openjdk-17-jdk unzip zip
@@ -30,9 +29,12 @@ jobs:
 
       - name: 使用官方原生命令编译 APK
         run: |
-          # 创建配置目录
+          # 核心修复：强行删除可能存在的旧缓存目录，迫使其完全重新加载全新的 spec 配置
+          rm -rf .buildozer/
+          rm -rf ~/.buildozer/
+          
+          # 创建配置目录并开始全新编译
           mkdir -p ~/.android && touch ~/.android/repositories.cfg
-          # 使用 yes 命令自动应答所有潜在的 SDK 协议授权提示，防止构建卡死
           yes | buildozer android debug
 
       - name: 上传 APK 产物
