@@ -7,11 +7,10 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 1.0
 
-requirements = python3,kivy==2.3.0,requests,plyer,pyjnius,certifi,urllib3,chardet,idna,android
+# 核心修复：去掉了末尾错误的 android，移除了 kivy 的强行版本号
+requirements = python3,kivy,requests,plyer,pyjnius,certifi,urllib3,chardet,idna
 
-# 注册后台前台服务：名字 Monitor 对应生成的 java 类 ServiceMonitor
-# 必须和 main.py 里 SERVICE_JAVA_CLASS 保持一致：
-# org.goodchain.cgcmonitor.ServiceMonitor
+# 注册后台前台服务：
 services = Monitor:service.py
 
 orientation = portrait
