@@ -8,12 +8,26 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+
     steps:
       - name: 拉取代码
         uses: actions/checkout@v4
 
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 安装系统依赖与 Cython
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential ccache git libffi-dev libssl-dev xclip libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
+          sudo apt-get install -y libgstreamer1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3
+          pip install --upgrade pip
+          pip install --upgrade Cython==0.29.33 virtualenv
+
       - name: 使用 buildozer 编译 APK
-        uses: ArtemSBulgakov/buildozer-action@v1
+        uses: jwpealm/buildozer-action@v2
         id: buildozer
         with:
           command: buildozer android debug
@@ -23,4 +37,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cgcmonitor-apk
-          path: ${{ steps.buildozer.outputs.filename }}
+          path: ./.buildozer/android/platform/build-armeabi-v7a_arm64-v8a/dists/*_*/bin/*.apk
