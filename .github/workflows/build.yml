@@ -21,18 +21,19 @@ jobs:
       - name: 安装系统依赖与 Buildozer 核心
         run: |
           sudo apt-get update
+          # 移除了引发报错的 gstreamer1.0-doc
           sudo apt-get install -y build-essential ccache git libffi-dev libssl-dev xclip libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
-          sudo apt-get install -y libgstreamer1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3
+          sudo apt-get install -y libgstreamer1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3
           sudo apt-get install -y openjdk-17-jdk unzip zip
           pip install --upgrade pip
           pip install --upgrade Cython==0.29.33 virtualenv buildozer
 
       - name: 使用官方原生命令编译 APK
         run: |
-          # 接受并预先同意 android sdk 的所有协议条款
+          # 创建配置目录
           mkdir -p ~/.android && touch ~/.android/repositories.cfg
-          # 执行编译
-          buildozer android debug
+          # 使用 yes 命令自动应答所有潜在的 SDK 协议授权提示，防止构建卡死
+          yes | buildozer android debug
 
       - name: 上传 APK 产物
         uses: actions/upload-artifact@v4
