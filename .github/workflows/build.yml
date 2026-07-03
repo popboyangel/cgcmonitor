@@ -27,7 +27,7 @@ jobs:
           pip install --upgrade Cython==0.29.33 virtualenv
 
       - name: 使用 buildozer 编译 APK
-        uses: jwpealm/buildozer-action@v2
+        uses: jwpeame/buildozer-action@v2
         id: buildozer
         with:
           command: buildozer android debug
